@@ -1,0 +1,14 @@
+services:
+  mcp-inspector-server:
+    build: .
+    container_name: mcp-inspector-server
+    env_file:
+      - .env
+    ports:
+      - "8081:8081"
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp

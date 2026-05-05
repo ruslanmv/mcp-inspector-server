@@ -136,3 +136,6 @@ Typical review flow:
 4. `inspector.run_contract_tests`
 5. `inspector.generate_report`
 
+
+---
+Used by [GitPilot](https://github.com/ruslanmv/gitpilot)'s MCP Context Forge stack ([`docker-compose.mcp.yml`](https://github.com/ruslanmv/gitpilot/blob/main/docker-compose.mcp.yml)). Image published via `.github/workflows/docker-publish.yml` on each release.

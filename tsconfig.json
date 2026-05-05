@@ -12,8 +12,7 @@
     "declaration": true,
     "sourceMap": true,
     "resolveJsonModule": true,
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true
+    "noUncheckedIndexedAccess": true
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist", "tests"]

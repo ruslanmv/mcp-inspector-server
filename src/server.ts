@@ -3,7 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import pino from 'pino';
-import pinoHttp from 'pino-http';
+import { pinoHttp } from 'pino-http';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { z } from 'zod';
@@ -14,6 +14,7 @@ import { createHealthTools, listCapabilitiesInput, pingServerInput } from './too
 import { createInvokeTools, invokeToolInput } from './tools/invoke.js';
 import { createContractTools, runContractTestsInput, validateToolSchemaInput } from './tools/contract.js';
 import { createReportTools, generateReportInput, ReportStore } from './tools/report.js';
+import { createBatchTools, batchValidateInput } from './tools/batch.js';
 import { configResource, latestLogsResource } from './resources/diagnostic-resources.js';
 import { fixMcpServerPrompt, inspectBeforePrPrompt } from './prompts/debugging-prompts.js';
 
@@ -40,6 +41,7 @@ export function createMcpServer() {
   const invokeTools = createInvokeTools(inspectorClient);
   const contractTools = createContractTools(inspectorClient);
   const reportTools = createReportTools(inspectorClient, logs, reports);
+  const batchTools = createBatchTools(inspectorClient);
 
   server.registerTool(
     'inspector.ping_server',
@@ -89,6 +91,17 @@ export function createMcpServer() {
       inputSchema: runContractTestsInput
     },
     async (args) => asTextContent(await contractTools.runContractTests(args))
+  );
+
+  server.registerTool(
+    'inspector.batch_validate',
+    {
+      title: 'Batch-validate MCP Servers',
+      description:
+        'Validate every attached MCP server in one call: ping, list capabilities, check required tools, and (optionally) run contract tests. Designed for GitPilot to call once at startup.',
+      inputSchema: batchValidateInput
+    },
+    async (args) => asTextContent(await batchTools.batchValidate(args))
   );
 
   server.registerTool(
